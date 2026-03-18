@@ -66,12 +66,16 @@ def listen():
             for event in data.get("updates", []):
                 if event[0] == 4 and not (event[2] & 2):
                     from_id = event[3]
-                    text = event[6] or "(без текста)"
+                    raw_text = event[6]
+                    if isinstance(raw_text, dict):
+                        text = "(вложение или пересланное сообщение)"
+                    else:
+                        text = str(raw_text) if raw_text else "(без текста)"
                     try:
                         name = get_user_name(from_id)
                     except:
                         name = f"ID {from_id}"
-                    send_push(f"📩 {name}", text)
+                    send_push(f"VK: {name}", text)
 
         except Exception as e:
             print(f"Ошибка: {e}")
