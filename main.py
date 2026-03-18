@@ -9,11 +9,12 @@ VK_VERSION = "5.131"
 def send_push(title, message):
     requests.post(
         f"https://ntfy.sh/{NTFY_TOPIC}",
-        data=message.encode("utf-8"),
+        data=message,
         headers={
-            "Title": title.encode("utf-8"),
+            "Title": title,
             "Priority": "high",
-            "Tags": "envelope"
+            "Tags": "envelope",
+            "Content-Type": "text/plain; charset=utf-8"
         }
     )
 
