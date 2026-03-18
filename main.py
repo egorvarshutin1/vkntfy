@@ -66,15 +66,34 @@ def listen():
             for event in data.get("updates", []):
                 if event[0] == 4 and not (event[2] & 2):
                     from_id = event[3]
-                    raw_text = event[6]
-                    if isinstance(raw_text, dict):
-                        text = "(вложение или пересланное сообщение)"
-                    else:
-                        text = str(raw_text) if raw_text else "(без текста)"
+                    msg_id = event[1]
+                    
+                    # Получаем полное сообщение через API
+                    try:
+                        msg_r = requests.get("https://api.vk.com/method/messages.getById", params={
+                            "access_token": VK_TOKEN,
+                            "v": VK_VERSION,
+                            "message_ids": msg_id
+                        })
+                        msg_data = msg_r.json()["response"]["items"][0]
+                        text = msg_data.get("text", "") or ""
+                        
+                        # Если есть вложения — добавляем пометку
+                        attachments = msg_data.get("attachments", [])
+                        if attachments:
+                            types = ", ".join(set(a["type"] for a in attachments))
+                            text = (text + f" [{types}]").strip()
+                        
+                        if not text:
+                            text = "(без текста)"
+                    except:
+                        text = "(не удалось получить текст)"
+                    
                     try:
                         name = get_user_name(from_id)
                     except:
                         name = f"ID {from_id}"
+                    
                     send_push(f"VK: {name}", text)
 
         except Exception as e:
