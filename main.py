@@ -36,7 +36,7 @@ def ask_yandex(question):
         }
     )
     data = response.json()
-    print(f"YandexGPT response: {data}")  # временно для отладки
+    # print(f"YandexGPT response: {data}")   временно для отладки
     return data["result"]["alternatives"][0]["message"]["text"]
 
 def send_vk_message(peer_id, text):
@@ -119,7 +119,7 @@ def listen():
                         sender_id = from_id
 
                     is_outgoing = bool(flags & 2) or (sender_id == MY_VK_ID)
-                    print(f"DEBUG: flags={flags}, sender_id={sender_id}, is_outgoing={is_outgoing}")
+                    # print(f"DEBUG: flags={flags}, sender_id={sender_id}, is_outgoing={is_outgoing}")
 
                     # Обработка команды $search — только в исходящих сообщениях
                     if is_outgoing and text.strip().lower().startswith("$search"):
