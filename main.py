@@ -95,14 +95,11 @@ def listen():
 
             for event in data.get("updates", []):
                 if event[0] == 4:
-                    print(f"DEBUG: flags={event[2]}, from_id={event[3]}, is_outgoing={bool(event[2] & 2)}")
                     flags = event[2]
                     from_id = event[3]
                     peer_id = event[3]
                     msg_id = event[1]
-                    is_outgoing = bool(flags & 2) or (from_id == MY_VK_ID)
 
-                    # Получаем полный текст сообщения
                     try:
                         msg_r = requests.get("https://api.vk.com/method/messages.getById", params={
                             "access_token": VK_TOKEN,
@@ -112,12 +109,17 @@ def listen():
                         msg_data = msg_r.json()["response"]["items"][0]
                         text = msg_data.get("text", "") or ""
                         peer_id = msg_data.get("peer_id", peer_id)
+                        sender_id = msg_data.get("from_id", from_id)
                         attachments = msg_data.get("attachments", [])
                         if attachments and not text:
                             types = ", ".join(set(a["type"] for a in attachments))
                             text = f"[{types}]"
                     except:
                         text = ""
+                        sender_id = from_id
+
+                    is_outgoing = bool(flags & 2) or (sender_id == MY_VK_ID)
+                    print(f"DEBUG: flags={flags}, sender_id={sender_id}, is_outgoing={is_outgoing}")
 
                     # Обработка команды $search — только в исходящих сообщениях
                     if is_outgoing and text.strip().lower().startswith("$search"):
