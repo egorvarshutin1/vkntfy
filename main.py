@@ -35,8 +35,9 @@ def ask_yandex(question):
             ]
         }
     )
-    result = response.json()
-    return result["result"]["alternatives"][0]["message"]["text"]
+    data = response.json()
+    print(f"YandexGPT response: {data}")  # временно для отладки
+    return data["result"]["alternatives"][0]["message"]["text"]
 
 def send_vk_message(peer_id, text):
     requests.get("https://api.vk.com/method/messages.send", params={
