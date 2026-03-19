@@ -94,6 +94,7 @@ def listen():
 
             for event in data.get("updates", []):
                 if event[0] == 4:
+                    print(f"DEBUG: flags={event[2]}, from_id={event[3]}, is_outgoing={bool(event[2] & 2)}")
                     flags = event[2]
                     from_id = event[3]
                     peer_id = event[3]
