@@ -64,7 +64,7 @@ def listen():
             ts = data["ts"]
 
             for event in data.get("updates", []):
-                if event[0] == 4 and not (event[2] & 2):
+                if event[0] == 4 and not (event[2] & 2) and event[3] < 2000000000:
                     from_id = event[3]
                     msg_id = event[1]
                     
