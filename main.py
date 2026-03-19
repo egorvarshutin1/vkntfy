@@ -99,7 +99,7 @@ def listen():
                     from_id = event[3]
                     peer_id = event[3]
                     msg_id = event[1]
-                    is_outgoing = bool(flags & 2)
+                    is_outgoing = bool(flags & 2) or (from_id == MY_VK_ID)
 
                     # Получаем полный текст сообщения
                     try:
